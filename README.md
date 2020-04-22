@@ -1,10 +1,11 @@
 # POL
 
 ## @xzy 2020.4.22
-
+添加了一个library包，其中包括：
 item：题目类  
 itemlib：题库类   
-liblist：题库列表类  
+liblist：题库列表类
+以及内置的题库和题库列表索引
 
 liblist X = new liblist( );  
 X.load( );  
