@@ -1,7 +1,7 @@
 # POL
 
 ## @xzy 2020.4.22
-添加了一个library包，其中包括：
+添加了一个library包，其中包括：  
 item：题目类  
 itemlib：题库类   
 liblist：题库列表类
