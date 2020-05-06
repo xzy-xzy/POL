@@ -14,7 +14,7 @@ X.load( );
 
 
 ## @xzy 2020.5.6
-library包进行了一些bug修正 
-添加了管理题库的ui  
+library包进行了一些bug修正  
+添加了管理题库的ui    
 
 
