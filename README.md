@@ -13,4 +13,8 @@ X.load( );
 每个题库的lib成员（arraylist类型）包含题库中所有的题目  
 
 
+## @xzy 2020.5.6
+library包进行了一些bug修正 
+添加了管理题库的ui  
+
 
