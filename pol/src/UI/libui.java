@@ -226,6 +226,8 @@ public class libui extends JFrame {
 						newrow[0]=name;
 						newrow[1]=path;
 						model.addRow(newrow);
+						int a=table.getSelectedRow( );
+						if(a!=-1) table.removeRowSelectionInterval(a,a);
 						int W = table.getRowCount( )-1;
 						table.addRowSelectionInterval(W,W);
 					}
@@ -267,6 +269,8 @@ public class libui extends JFrame {
 							newrow[0]=R.name;
 							newrow[1]=R.path;
 							model.addRow(newrow);
+							int a=table.getSelectedRow( );
+							if(a!=-1) table.removeRowSelectionInterval(a,a);
 							int W = table.getRowCount( )-1;
 							table.addRowSelectionInterval(W,W);
 						}
