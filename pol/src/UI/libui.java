@@ -6,10 +6,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JList;
 import javax.swing.JTextPane;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.SystemColor;
 import javax.swing.ListSelectionModel;
 import javax.swing.JTable;
@@ -37,7 +39,37 @@ public class libui extends JFrame {
 		ActionListener S[ ] = B.getActionListeners( );
 		for(int i=0;i<S.length;i++) B.removeActionListener(S[i]);
 	}
-
+	
+	/**
+	 * 设置表格底色
+	 * @param table 表格
+	 */
+    public static void tablecolor(JTable table) 
+    {
+        try
+        {
+            DefaultTableCellRenderer tcr = new DefaultTableCellRenderer()
+            {
+                private static final long serialVersionUID = 1L;
+                public Component getTableCellRendererComponent(JTable table,Object value, boolean isSelected, boolean hasFocus,int row, int column){
+                    if(row%2 == 0)
+                        setBackground(Color.WHITE);//设置奇数行底色
+                    else if(row%2 == 1)
+                        setBackground(new Color(215,215,215));//设置偶数行底色
+                    return super.getTableCellRendererComponent(table, value,isSelected, hasFocus, row, column);
+                }
+            };
+            for(int i = 0; i < table.getColumnCount(); i++) 
+            {
+                table.getColumn(table.getColumnName(i)).setCellRenderer(tcr);
+            }
+            tcr.setHorizontalAlignment(JLabel.CENTER);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+	
 	/**
 	 * Create the frame.
 	 */
@@ -95,6 +127,7 @@ public class libui extends JFrame {
 					}
 				};
 		scrollPane.setViewportView(table);
+		tablecolor(table);
 		
 		/**
 		 * 删除按钮
@@ -193,6 +226,8 @@ public class libui extends JFrame {
 						newrow[0]=name;
 						newrow[1]=path;
 						model.addRow(newrow);
+						int W = table.getRowCount( )-1;
+						table.addRowSelectionInterval(W,W);
 					}
 				}
 			}
@@ -221,7 +256,7 @@ public class libui extends JFrame {
 						String name = bk.getText( );
 						if(name.contentEquals("")) 
 							{
-								System.out.println("FAKE");name="未命名";
+								name="未命名";
 							}
 						itemlib R = new itemlib( );
 						if(R.setnull(name)==0)
@@ -232,6 +267,8 @@ public class libui extends JFrame {
 							newrow[0]=R.name;
 							newrow[1]=R.path;
 							model.addRow(newrow);
+							int W = table.getRowCount( )-1;
+							table.addRowSelectionInterval(W,W);
 						}
 						tip.setVisible(false);
 					}
@@ -329,6 +366,7 @@ public class libui extends JFrame {
 				int ID = table.getSelectedRow( );
 				if(ID==-1) return;
 				itemlib H = X.liblist.get(ID);
+				H.setfromfile(new StringBuffer(H.path+","+H.name+","));
 				String[ ][ ] prob = new String[H.num][2];
 				int i=0;
 				for(item b:H.lib)
@@ -340,10 +378,14 @@ public class libui extends JFrame {
 				String[ ] title = {"题目","答案"};
 				DefaultTableModel model = new DefaultTableModel(prob,title);
 				table_1.setModel(model);
+				tablecolor(table_1);
 				textField.setText(H.name);
 				textPane_2.setText("题库路径："+H.path);
 				
-				table.setEnabled(false);
+				//table.setEnabled(false);
+				
+				JTextField Srow = new JTextField( );
+				Srow.setText(Integer.toString(table.getSelectedRow( )));
 				
 				//删除
 				btnNewButton_3.addActionListener(new ActionListener() {
@@ -400,6 +442,8 @@ public class libui extends JFrame {
 								rowData[0] = prob;
 								rowData[1] = ans;
 								model.insertRow(ID,rowData);
+								if(ID+1!=table_1.getRowCount( ))
+									table_1.removeRowSelectionInterval(ID+1,ID+1);
 								tip.setVisible(false);
 							}
 						});
@@ -481,6 +525,12 @@ public class libui extends JFrame {
 								tip.setVisible(false);
 							}
 						});
+						String name = textField.getText( );
+						if(name.contentEquals("")) name="未命名";
+						H.name = name;
+						H.save( );X.save( );
+						int ID = Integer.parseInt(Srow.getText( ));
+						table.setValueAt(name,ID,0);
 						tip.getContentPane( ).add(tipA);
 						JTextPane textPane = new JTextPane();
 						textPane.setEditable(false);
@@ -489,20 +539,13 @@ public class libui extends JFrame {
 						textPane.setBounds(110, 50, 300, 16);
 						tip.getContentPane( ).add(textPane);
 						tip.setVisible(true);
-						
-						String name = textField.getText( );
-						if(name.contentEquals("")) name="未命名";
-						H.name = name;
-						H.save( );
-						int ID = table.getSelectedRow( );
-						table.setValueAt(name,ID,0);
 					}
 				});
 				
 				//退出编辑
 				button_4.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						table.enable( );
+						//table.enable( );
 						panel.setVisible(false);
 					}
 				});
