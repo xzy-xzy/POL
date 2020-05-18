@@ -73,7 +73,7 @@ public class libui extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public libui(liblist X) {
+	public libui(liblist X,DefaultTableModel model) {
 		
 		JPanel contentPane;
 		JTable table;
@@ -82,7 +82,7 @@ public class libui extends JFrame {
 		JButton btnNewButton_2;
 		JButton button;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation();
 		setBounds(100, 100, 488, 375);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -109,6 +109,7 @@ public class libui extends JFrame {
 		/**
 		 * 显示题库列表的表格
 		 */
+		/*
 		String[ ][ ] infoindex = new String[X.num][2];
 		int i=0;
 		for(itemlib e:X.liblist)
@@ -119,6 +120,7 @@ public class libui extends JFrame {
 		}
 		String[ ] title = {"name","path"};
 		DefaultTableModel model = new DefaultTableModel(infoindex,title);
+		*/
 		table = new JTable(model)
 				{
 					public boolean isCellEditable(int row, int column)
@@ -128,6 +130,7 @@ public class libui extends JFrame {
 				};
 		scrollPane.setViewportView(table);
 		tablecolor(table);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		/**
 		 * 删除按钮
@@ -179,7 +182,7 @@ public class libui extends JFrame {
 		/**
 		 * 文件选择器：导入新的题库
 		 */
-		JFileChooser cho = new JFileChooser( );
+		JFileChooser cho = new JFileChooser("./src");
 		
 		btnNewButton_1 = new JButton("导入新的题库");
 		btnNewButton_1.addActionListener(new ActionListener() {
@@ -337,6 +340,7 @@ public class libui extends JFrame {
 					}
 				};
 		scrollPane_1.setViewportView(table_1);
+		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);	
 		
 		JButton btnNewButton_3 = new JButton("删除");
 		btnNewButton_3.setBounds(0, 306, 81, 29);
