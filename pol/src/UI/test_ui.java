@@ -61,7 +61,8 @@ public class test_ui extends JFrame {
 					}
 					String[ ] title = {"name","path"};
 					model = new DefaultTableModel(infoindex,title);
-					libui libframe = new libui(X,model);
+					libui libframe = new libui(X, model);
+					// wrong_memo_ui WM = new wrong_memo_ui();
 					test_ui frame = new test_ui(X,libframe);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -75,7 +76,7 @@ public class test_ui extends JFrame {
 	 * Create the frame.
 	 */
 	public test_ui(liblist X,libui F) {
-		F.setVisible(true);
+		//F.setVisible(false);
 		wrong_memo = new HashSet<item>();
 		ongoing_qa_id = 0;
 		total_current_qa = 1;
@@ -118,9 +119,9 @@ public class test_ui extends JFrame {
 		contentPane.add(scrollPane_1);
 
 		JTextArea textArea_question = new JTextArea();
-		textArea_question.setWrapStyleWord(true);
+		//textArea_question.setWrapStyleWord(true);
 		textArea_question.setLineWrap(true);
-		textArea_question.setEditable(false);
+		textArea_question.setEditable(true);
 		scrollPane_1.setViewportView(textArea_question);
 
 
@@ -221,7 +222,7 @@ public class test_ui extends JFrame {
 				is_answer_shown = false;
 				// btnNewButton_show_answer.setText("show answer");
 				// 显示题目
-				textArea_answer.setText(selected_tiku.lib.get(ongoing_qa_id).problem);	  
+				textArea_answer.setText(selected_tiku.lib.get(ongoing_qa_id).problem);
 				// 每更新一个题目，要修改textfield进度条
 				textField.setText(Integer.toString(ongoing_qa_id + 1) + '\\' + Integer.toString(total_current_qa));
 				btnNewButton_last.setText("上一题");
@@ -424,6 +425,22 @@ public class test_ui extends JFrame {
 		JButton button_gl = new JButton("题库管理");
 		contentPane.add(button_gl);
 		button_gl.setBounds(6,389, 117, 29);
+		
+		JButton btnWM = new JButton("查看错题本");
+		btnWM.setBounds(115, 382, 117, 29);
+		contentPane.add(btnWM);
+		btnWM.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				ArrayList<item> I = new ArrayList<item> ();
+				for(item i: wrong_memo)
+					I.add(i);
+				wrong_memo_ui WM = new wrong_memo_ui(I, (String) model.getValueAt(table.getSelectedRow(), 0),X,model);
+				WM.setVisible(true);
+			}
+		});
+		
+		
 		button_gl.setVisible(true);
 		button_gl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
@@ -431,6 +448,8 @@ public class test_ui extends JFrame {
 				F.setVisible(true);
 			}
 		});
+		
+		
 
 	}
 }
