@@ -52,11 +52,15 @@ public class itemlib
 			if(!file.exists( )) {return 2;}
 			StringBuffer buf = new StringBuffer( );
 			FileReader R = new FileReader(_path);
-			int cnt=0,ch=0;char c;
+			int cnt=0,ch=0;char c,fc;boolean ND;
+			c=0;fc=0;ND=false;
 			while((ch=R.read( ))!=-1)
 			{
 				c=(char)ch;
-				buf.append(c);
+				if(fc!='\r'&&c=='\n') buf.append('\r');
+				if(ND==false || c!='\n') buf.append(c);
+				if(c=='\r') {buf.append('\n');ND=true;}
+				else {fc=c;ND=false;}
 				if(c=='@')
 				{
 					cnt++;

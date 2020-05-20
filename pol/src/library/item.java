@@ -5,7 +5,8 @@ public class item
 	item( ) {}
 	item(String A,String B)
 	{
-		problem=A;answer=B;
+		problem=A;
+		answer=B;
 	}
 	
 	/**
