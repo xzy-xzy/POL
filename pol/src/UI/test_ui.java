@@ -24,6 +24,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.UIManager;
 import javax.swing.JTextArea;
 
 
@@ -51,6 +52,8 @@ public class test_ui extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					//String lookAndFeel = "javax.swing.plaf.mac.MacLookAndFeel";
+					//UIManager.setLookAndFeel(lookAndFeel);
 					String[ ][ ] infoindex = new String[X.num][2];
 					int i=0;
 					for(itemlib e:X.liblist)

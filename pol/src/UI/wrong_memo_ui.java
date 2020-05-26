@@ -147,8 +147,8 @@ public class wrong_memo_ui extends JFrame {
 						{
 							public void actionPerformed(ActionEvent e)
 							{
-								memo_itemlib.name += "错题";
 								memo_itemlib.path = "./src/library/" + textPane_1.getText();
+								memo_itemlib.name = memo_itemlib.path;
 								memo_itemlib.save();
 								X.liblist.add(memo_itemlib);X.save( );
 								String newrow[ ] = new String[2];

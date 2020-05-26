@@ -2,10 +2,14 @@ package UI;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JList;
@@ -29,6 +33,37 @@ import java.awt.event.ActionEvent;
 public class libui extends JFrame {
 	private JTextField textField;
 	private JTable table_1;
+	
+	public class TextBorderUtlis extends LineBorder 
+	{
+
+		private static final long serialVersionUID = 1L;
+
+		public TextBorderUtlis(Color color, int thickness, boolean roundedCorners) 
+		{
+			super(color, thickness, roundedCorners);
+		}
+
+		public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) 
+		{
+
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			Color oldColor = g.getColor();
+			Graphics2D g2 = (Graphics2D) g;
+			int i;
+			g2.setRenderingHints(rh);
+			g2.setColor(lineColor);
+			for (i = 0; i < thickness; i++) 
+			{
+				if (!roundedCorners){
+					g2.drawRect(x + i, y + i, width - i - i - 1, height - i - i - 1);
+				}else{
+					g2.drawRoundRect(x + i, y + i, width - i - i - 1, height - i - i - 1, 5, 5);}
+			}
+			g2.setColor(oldColor);
+		}
+
+	}
 
 	/**
 	 * 去除按钮上的所有监听器
@@ -154,12 +189,21 @@ public class libui extends JFrame {
 				textPane.setBackground(SystemColor.window);
 				textPane.setText("你确定要删除该题库吗？");
 				textPane.setBounds(75, 50, 300, 16);
+				JCheckBox U = new JCheckBox("同时删除文件");
+				U.setSelected(true);
+				U.setBounds(83,70,300,16);
+				tip.getContentPane( ).add(U);
 				tip.getContentPane( ).add(textPane);
 				if(ID==-1) return;
 				tipA.addActionListener(new ActionListener()
 						{
 							public void actionPerformed(ActionEvent e)
 							{
+								if(U.isSelected( ))
+								{
+									File file = new File(X.liblist.get(ID).path);
+									file.delete( );
+								}
 								X.liblist.remove(ID);
 								X.save( );
 								model.removeRow(ID);
@@ -389,6 +433,7 @@ public class libui extends JFrame {
 				tablecolor(table_1);
 				textField.setText(H.name);
 				textPane_2.setText("题库路径："+H.path);
+				btnNewButton.setEnabled(false);
 				
 				//table.setEnabled(false);
 				
@@ -410,14 +455,15 @@ public class libui extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						JDialog tip = new JDialog(libui.this,true);
 						tip.getContentPane().setLayout(null);
-						tip.setBounds(100,100,300,200);
+						tip.setBounds(100, 100, 488, 375);
 						
 						JTextArea textPane = new JTextArea();
 						textPane.setEditable(false);
 						textPane.setBackground(SystemColor.window);
 						textPane.setText("题目：");
-						textPane.setBounds(20, 50, 30, 16);
+						textPane.setBounds(20, 45, 30, 16);
 						tip.getContentPane( ).add(textPane);
+						
 						
 						JTextArea textPane2 = new JTextArea();
 						textPane2.setEditable(false);
@@ -426,23 +472,38 @@ public class libui extends JFrame {
 						textPane2.setBounds(20, 70, 30, 16);
 						tip.getContentPane( ).add(textPane2);
 						
-						JTextField A1 = new JTextField();
-						A1.setBounds(60, 50, 220, 16);
+						//TextBorderUtlis border = new TextBorderUtlis(new Color(192,192,192),1,true);
+						JScrollPane A1 = new JScrollPane();
+						A1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+						A1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+						JTextArea txt1 = new JTextArea( );
+						txt1.setWrapStyleWord(true);
+						txt1.setLineWrap(true);
+						A1.setViewportView(txt1);
+						A1.setBounds(60, 45, 400, 20);
 						tip.getContentPane( ).add(A1);
-						JTextField A2 = new JTextField();
-						A2.setBounds(60, 70, 220, 16);
+						
+						JScrollPane A2 = new JScrollPane();
+						A2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						A2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+						JTextArea txt2 = new JTextArea( );
+						txt2.setWrapStyleWord(true);
+						txt2.setLineWrap(true);
+						A2.setViewportView(txt2);
+						A2.setBounds(60, 70, 400, 230);
+						//A2.setBorder(border);
 						tip.getContentPane( ).add(A2);
 						
 						JButton tipA = new JButton("确认");
-						tipA.setBounds(120,100,60,20);
+						tipA.setBounds(230,310,60,20);
 						tipA.addActionListener(new ActionListener()
 						{
 							public void actionPerformed(ActionEvent e)
 							{
 								int ID = table_1.getSelectedRow( );
 								if(ID==-1) ID=table_1.getRowCount( );
-								String prob = A1.getText( );
-								String ans = A2.getText( );
+								String prob = txt1.getText( );
+								String ans = txt2.getText( );
 								if(prob.contentEquals("")) prob="null";
 								if(ans.contentEquals("")) ans="null";
 								H.add(prob,ans,ID);
@@ -467,14 +528,15 @@ public class libui extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						JDialog tip = new JDialog(libui.this,true);
 						tip.getContentPane().setLayout(null);
-						tip.setBounds(100,100,300,200);
+						tip.setBounds(100, 100, 488, 375);
 						
 						JTextArea textPane = new JTextArea();
 						textPane.setEditable(false);
 						textPane.setBackground(SystemColor.window);
 						textPane.setText("题目：");
-						textPane.setBounds(20, 50, 30, 16);
+						textPane.setBounds(20, 45, 30, 16);
 						tip.getContentPane( ).add(textPane);
+						
 						
 						JTextArea textPane2 = new JTextArea();
 						textPane2.setEditable(false);
@@ -483,26 +545,43 @@ public class libui extends JFrame {
 						textPane2.setBounds(20, 70, 30, 16);
 						tip.getContentPane( ).add(textPane2);
 						
-						int RD = table_1.getSelectedRow( );
-						JTextField A1 = new JTextField();
-						A1.setBounds(60, 50, 220, 16);
-						A1.setText((String)model.getValueAt(RD,0));
+						//TextBorderUtlis border = new TextBorderUtlis(new Color(192,192,192),1,true);
+						JScrollPane A1 = new JScrollPane();
+						A1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+						A1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+						JTextArea txt1 = new JTextArea( );
+						txt1.setWrapStyleWord(true);
+						txt1.setLineWrap(true);
+						A1.setViewportView(txt1);
+						A1.setBounds(60, 45, 400, 20);
 						tip.getContentPane( ).add(A1);
-						JTextField A2 = new JTextField();
-						A2.setBounds(60, 70, 220, 16);
-						A2.setText((String)model.getValueAt(RD,1));
+						
+						JScrollPane A2 = new JScrollPane();
+						A2.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						A2.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+						JTextArea txt2 = new JTextArea( );
+						txt2.setWrapStyleWord(true);
+						txt2.setLineWrap(true);
+						A2.setViewportView(txt2);
+						A2.setBounds(60, 70, 400, 230);
+						//A2.setBorder(border);
 						tip.getContentPane( ).add(A2);
 						
 						JButton tipA = new JButton("确认");
-						tipA.setBounds(120,100,60,20);
+						tipA.setBounds(230,310,60,20);
+						
+						int RD = table_1.getSelectedRow( );
+						txt1.setText((String)model.getValueAt(RD,0));
+						txt2.setText((String)model.getValueAt(RD,1));
+						
 						tipA.addActionListener(new ActionListener()
 						{
 							public void actionPerformed(ActionEvent e)
 							{
 								int ID = table_1.getSelectedRow( );
 								if(ID==-1) ID=table_1.getRowCount( );
-								String prob = A1.getText( );
-								String ans = A2.getText( );
+								String prob = txt1.getText( );
+								String ans = txt2.getText( );
 								if(prob.contentEquals("")) prob="null";
 								if(ans.contentEquals("")) ans="null";
 								H.ch(prob,ans,ID);
@@ -555,6 +634,7 @@ public class libui extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						//table.enable( );
 						panel.setVisible(false);
+						btnNewButton.setEnabled(true);
 					}
 				});
 				
