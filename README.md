@@ -1,1 +1,1 @@
-主类是test_ui，运行它就行。
+导入project之后运行主类test_ui即可。
